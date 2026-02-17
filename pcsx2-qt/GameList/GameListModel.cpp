@@ -73,9 +73,10 @@ const char* GameListModel::getColumnName(const Column col)
 	return s_column_names[static_cast<int>(col)];
 }
 
-GameListModel::GameListModel(const float cover_scale, const bool show_cover_titles, const qreal dpr, QObject* parent /* = nullptr */)
+GameListModel::GameListModel(const float cover_scale, const bool show_cover_titles, bool show_full_cover_titles, const qreal dpr, QObject* parent /* = nullptr */)
 	: QAbstractTableModel(parent)
 	, m_show_titles_for_covers(show_cover_titles)
+	, m_show_full_titles_for_covers(show_full_cover_titles)
 	, m_dpr{dpr}
 {
 	loadSettings();
@@ -316,6 +317,8 @@ QVariant GameListModel::data(const QModelIndex& index, const int role) const
 			switch (index.column())
 			{
 				case Column_Cover:
+					if (m_show_full_titles_for_covers)
+						return QVariant();
 					return QSize(static_cast<int>(static_cast<float>(SIZE_HINT_WIDTH) * m_cover_scale),
 						static_cast<int>(static_cast<float>(m_show_titles_for_covers ? SIZE_HINT_HEIGHT_TITLES : SIZE_HINT_HEIGHT) * m_cover_scale));
 

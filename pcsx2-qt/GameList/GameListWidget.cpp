@@ -213,7 +213,8 @@ void GameListWidget::initialize()
 {
 	const float cover_scale = Host::GetBaseFloatSettingValue("UI", "GameListCoverArtScale", 0.45f);
 	const bool show_cover_titles = Host::GetBaseBoolSettingValue("UI", "GameListShowCoverTitles", true);
-	m_model = new GameListModel(cover_scale, show_cover_titles, devicePixelRatioF(), this);
+	const bool show_full_cover_titles = Host::GetBaseBoolSettingValue("UI", "GameListShowFullCoverTitles", true);
+	m_model = new GameListModel(cover_scale, show_cover_titles, show_full_cover_titles, devicePixelRatioF(), this);
 	m_model->updateCacheSize(width(), height());
 
 	m_sort_model = new GameListSortModel(m_model);
@@ -462,6 +463,11 @@ bool GameListWidget::getShowGridCoverTitles() const
 	return m_model->getShowCoverTitles();
 }
 
+bool GameListWidget::getShowGridFullCoverTitles() const
+{
+	return m_model->getShowFullCoverTitles();
+}
+
 void GameListWidget::refresh(bool invalidate_cache, bool popup_on_error)
 {
 	cancelRefresh();
@@ -676,6 +682,20 @@ void GameListWidget::setShowCoverTitles(bool enabled)
 	Host::SetBaseBoolSettingValue("UI", "GameListShowCoverTitles", enabled);
 	Host::CommitBaseSettingChanges();
 	m_model->setShowCoverTitles(enabled);
+	if (isShowingGameGrid())
+		m_model->refresh();
+	updateToolbar();
+	emit layoutChange();
+}
+
+void GameListWidget::setShowFullCoverTitles(bool enabled)
+{
+	if (m_model->getShowFullCoverTitles() == enabled)
+		return;
+
+	Host::SetBaseBoolSettingValue("UI", "GameListShowFullCoverTitles", enabled);
+	Host::CommitBaseSettingChanges();
+	m_model->setShowFullCoverTitles(enabled);
 	if (isShowingGameGrid())
 		m_model->refresh();
 	updateToolbar();
