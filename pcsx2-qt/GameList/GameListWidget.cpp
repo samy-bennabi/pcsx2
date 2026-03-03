@@ -243,6 +243,7 @@ void GameListWidget::initialize()
 	connect(m_ui.viewGameGrid, &QPushButton::clicked, this, &GameListWidget::showGameGrid);
 	connect(m_ui.gridScale, &QSlider::valueChanged, this, &GameListWidget::gridIntScale);
 	connect(m_ui.viewGridTitles, &QPushButton::toggled, this, &GameListWidget::setShowCoverTitles);
+	connect(m_ui.viewFullGridTitles, &QPushButton::toggled, this, &GameListWidget::setShowFullCoverTitles);
 	connect(m_ui.filterType, &QComboBox::currentIndexChanged, this, [this](int index) {
 		m_sort_model->setFilterType((index == 0) ? GameList::EntryType::Count : static_cast<GameList::EntryType>(index - 1));
 	});
@@ -718,11 +719,16 @@ void GameListWidget::updateToolbar()
 		m_ui.viewGridTitles->setChecked(m_model->getShowCoverTitles());
 	}
 	{
+		QSignalBlocker sb(m_ui.viewFullGridTitles);
+		m_ui.viewFullGridTitles->setChecked(m_model->getShowFullCoverTitles());
+	}
+	{
 		QSignalBlocker sb(m_ui.gridScale);
 		m_ui.gridScale->setValue(static_cast<int>(m_model->getCoverScale() * 100.0f));
 	}
 
 	m_ui.viewGridTitles->setEnabled(grid_view);
+	m_ui.viewFullGridTitles->setEnabled(grid_view);
 	m_ui.gridScale->setEnabled(grid_view);
 }
 

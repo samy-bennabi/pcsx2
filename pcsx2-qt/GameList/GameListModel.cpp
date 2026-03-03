@@ -317,8 +317,6 @@ QVariant GameListModel::data(const QModelIndex& index, const int role) const
 			switch (index.column())
 			{
 				case Column_Cover:
-					if (m_show_full_titles_for_covers)
-						return QVariant();
 					return QSize(static_cast<int>(static_cast<float>(SIZE_HINT_WIDTH) * m_cover_scale),
 						static_cast<int>(static_cast<float>(m_show_titles_for_covers ? SIZE_HINT_HEIGHT_TITLES : SIZE_HINT_HEIGHT) * m_cover_scale));
 
