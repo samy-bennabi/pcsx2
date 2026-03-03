@@ -135,7 +135,7 @@
           <string>Show  Full Titles</string>
          </property>
          <property name="icon">
-          <iconset theme="price-tag-3-line"/>
+          <iconset theme="price-tag-2-line"/>
          </property>
          <property name="checkable">
           <bool>true</bool>
