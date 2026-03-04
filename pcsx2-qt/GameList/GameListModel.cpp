@@ -317,9 +317,32 @@ QVariant GameListModel::data(const QModelIndex& index, const int role) const
 			switch (index.column())
 			{
 				case Column_Cover:
+				{
+					const int cover_width = static_cast<int>(static_cast<float>(SIZE_HINT_WIDTH) * m_cover_scale);
+            		const int cover_height = static_cast<int>(static_cast<float>(SIZE_HINT_HEIGHT) * m_cover_scale);
+
+            		if (m_show_full_titles_for_covers && m_show_titles_for_covers)
+            		{
+                		// Calculate height needed for the longest title at the current font/width
+                		int max_text_height = 0;
+                		QFont font;
+                		font.setPointSizeF(20.0f * m_cover_scale); 
+                		const QFontMetrics fm(font);
+                		const u32 count = GameList::GetEntryCount(); // check number of ps2 (and ps1) games to see if u16 would do the job here
+                		for (u32 i = 0; i < count; i++)				 // and here
+                		{
+                    		const GameList::Entry* entry = GameList::GetEntryByIndex(i);
+                    		if (!entry) continue;
+                    		const QString title = QString::fromStdString(entry->GetTitle(m_prefer_english_titles));
+                    		const QRect bound = fm.boundingRect(QRect(0, 0, cover_width, 0),
+                        		Qt::TextWordWrap | Qt::AlignHCenter, title);
+                    		max_text_height = std::max(max_text_height, bound.height());
+                		}
+                		return QSize(cover_width, cover_height + max_text_height);
+            		}
 					return QSize(static_cast<int>(static_cast<float>(SIZE_HINT_WIDTH) * m_cover_scale),
 						static_cast<int>(static_cast<float>(m_show_titles_for_covers ? SIZE_HINT_HEIGHT_TITLES : SIZE_HINT_HEIGHT) * m_cover_scale));
-
+				}
 				default:
 					return QVariant();
 			}

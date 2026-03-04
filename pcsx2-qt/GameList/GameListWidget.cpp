@@ -315,6 +315,7 @@ void GameListWidget::initialize()
 	m_list_view->setFrameStyle(QFrame::NoFrame);
 	m_list_view->setVerticalScrollMode(QAbstractItemView::ScrollMode::ScrollPerPixel);
 	m_list_view->verticalScrollBar()->setSingleStep(15);
+	m_list_view->setWordWrap(show_full_cover_titles);
 	onCoverScaleChanged();
 
 	connect(m_list_view->selectionModel(), &QItemSelectionModel::currentChanged, this,
@@ -697,6 +698,7 @@ void GameListWidget::setShowFullCoverTitles(bool enabled)
 	Host::SetBaseBoolSettingValue("UI", "GameListShowFullCoverTitles", enabled);
 	Host::CommitBaseSettingChanges();
 	m_model->setShowFullCoverTitles(enabled);
+	m_list_view->setWordWrap(enabled); 
 	if (isShowingGameGrid())
 		m_model->refresh();
 	updateToolbar();
